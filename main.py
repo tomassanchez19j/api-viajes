@@ -1,12 +1,13 @@
 from fastapi import FastAPI
-import psycopg2
+import psycopg
 from fastapi.middleware.cors import CORSMiddleware
 from esqumas.esquemasdatos import esquema_usuarios, esquema_vuelos,esquema_alquileres,esquema_ventas_vuelos,esquema_ventas_alquileres
+from psycopg.rows import dict_row
 contra = "tomisan19j"
 url = f"postgresql://postgres.gtggrdzrgifuqoihvjll:{contra}@aws-0-us-east-2.pooler.supabase.com:6543/postgres"
 def connection():
     try:
-        conn = psycopg2.connect(url, sslmode='require')
+        conn = psycopg.connect(url, sslmode='require',row_factory=dict_row)
         return conn
     except Exception as e:
         print("error", e)
@@ -26,6 +27,9 @@ if conn:
     conn.close()
 else:
     print("❌")
+
+
+
 
 #METODOS HTTP DE USUARIOS
 @app.post("/api/usuarios")
@@ -89,17 +93,27 @@ def eliminar_usuarios(id:int):
 
 
 #METODOS HTTP DE ventas_de_vueloS
-
+@app.post("/api/ventas_de_vuelos")
+def ingresar_ventas_de_vuelos(user_data: esquema_ventas_vuelos):
+    conn = connection()
+    print(conn)
+    with conn:
+        with conn.cursor() as cur:
+            cur.execute("""INSERT INTO ventas_de_vuelos(
+                        id_vuelo,
+                        id_comprador)
+                        VALUES(%s,%s)
+                
+            """,(user_data.id_vuelo,user_data.id_comprador))
+            return {"hola":"mundo"}
 @app.get("/api/ventas_de_vuelos/leer")
 def recuperar_todas_las_ventas_de_vuelos():
     conn = connection()
     with conn.cursor() as cur:
         cur.execute("SELECT * FROM ventas_de_vuelos")
         ventas_de_vuelos = cur.fetchall()
-    return ventas_de_vuelos
 @app.get("/api/ventas_de_vuelos/leer/{id}")
 def recuperar_ventas_de_vuelos(id:int):
-
     conn = connection()
     with conn:
         with conn.cursor() as cur:
@@ -146,10 +160,9 @@ def insertar_vuelos(user_data: esquema_vuelos):
                             asientos_disponibles,
                             precio,
                             fecha_de_salida,
-                            hora_de_salida,
-                            id_comprador)
-                            VALUES(%s,%s,%s,%s,%s,%s,%s)
-                """, (user_data.partida,user_data.destino,user_data.asientos_disponibles,user_data.precio,user_data.fecha_de_salida,user_data.hora_de_salida,user_data.id_comprador))
+                            hora_de_salida)
+                            VALUES(%s,%s,%s,%s,%s,%s)
+                """, (user_data.partida,user_data.destino,user_data.asientos_disponibles,user_data.precio,user_data.fecha_de_salida,user_data.hora_de_salida))
         return {"vuelo_guardado":"si"}
     except Exception as e:
         print(e)
@@ -180,12 +193,12 @@ def actualizar_asientos_disponibles(user_data:esquema_vuelos,id:int):
     except Exception as e:
         return {"error": str(e)}
 @app.delete("/api/vuelos/eliminar/{id}")
-def eliminar_vuelos(id:str):
+def eliminar_vuelos(id:int):
     try:
         conn = connection()
         with conn:
             with conn.cursor() as cur:
-                cur.execute(f"DELETE FROM vuelos WHERE id_vuelos = (%s);",(id,))
+                cur.execute("DELETE FROM vuelos WHERE id_vuelos = (%s);",(id,))
             return {"se":"elimino"}
     except Exception as e:
         return {"error": str(e)}
@@ -296,7 +309,14 @@ def eliminr_alquileres(id:str):
     except Exception as e:
         return {"error": str(e)}
 
-
+#METODOS HTTP DE ADMINISTRADORES
+@app.get("/api/administradores")
+def recuperar_todos_los_administradores():
+    conn = connection()
+    with conn.cursor() as cur:
+        cur.execute("SELECT * FROM administradores")
+        admins= cur.fetchall()
+    return admins
 
     
     
