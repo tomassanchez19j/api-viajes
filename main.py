@@ -308,7 +308,7 @@ def eliminr_alquileres(id:str):
             return {"se":"elimino"}
     except Exception as e:
         return {"error": str(e)}
-
+#hola mundo jsjajsjas
 #METODOS HTTP DE ADMINISTRADORES
 @app.get("/api/administradores")
 def recuperar_todos_los_administradores():
@@ -317,6 +317,3 @@ def recuperar_todos_los_administradores():
         cur.execute("SELECT * FROM administradores")
         admins= cur.fetchall()
     return admins
-
-    
-    
