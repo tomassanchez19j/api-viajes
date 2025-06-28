@@ -10,9 +10,6 @@ class esquema_usuarios(BaseModel):
 class esquema_ventas_vuelos(BaseModel):
     id_vuelo:int
     id_comprador:int
-    fecha_compra: int
-    metodo_compra: str
-    total: int
 class esquema_vuelos(BaseModel):
     partida: str
     destino:str

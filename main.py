@@ -71,20 +71,6 @@ def recuperar_usuario(id: int):
     return usuario
 from fastapi import Query
 
-@app.get("/api/usuarios/por_contrasena")
-def recuperar_usuarios_por_contraseña(contraseña: str = Query(...)):
-    conn = connection()
-    if not conn:
-        raise HTTPException(status_code=500, detail="Database connection failed")
-    with conn:
-        with conn.cursor() as cur:
-            cur.execute("SELECT * FROM usuarios WHERE contraseña = %s", (contraseña,))
-            usuario = cur.fetchone()
-    if not usuario:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    return usuario
-
-
 @app.put("/api/usuarios/actualizar/{id}")
 def actualizar_usuario(user_data: esquema_usuarios, id: int):
     conn = connection()
@@ -334,9 +320,9 @@ def insertar_venta_vuelo(user_data: esquema_ventas_vuelos):
     with conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO ventas_de_vuelos(id_vuelo, id_comprador, fecha_compra, metodo_pago, total)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (user_data.id_vuelo, user_data.id_comprador, user_data.fecha_compra, user_data.metodo_compra, user_data.total))
+                INSERT INTO ventas_de_vuelos(id_vuelo, id_comprador)
+                VALUES (%s, %s)
+            """, (user_data.id_vuelo, user_data.id_comprador))
     return {"mensaje": "Venta de vuelo insertada correctamente"}
 
 @app.get("/api/ventas_de_vuelos/leer")
