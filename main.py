@@ -78,7 +78,7 @@ def recuperar_usuarios_por_contraseña(contraseña: str = Query(...)):
         raise HTTPException(status_code=500, detail="Database connection failed")
     with conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT * FROM usuarios WHERE contraseña = %s", (contraseña,))
+            cur.execute("SELECT FROM usuarios WHERE contraseña = %s", (contraseña,))
             usuario = cur.fetchone()
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
