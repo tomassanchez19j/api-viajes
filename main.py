@@ -69,11 +69,13 @@ def recuperar_usuario(id: int):
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return usuario
-@app.get("/api/usuarios/leer/{contraseña}")
-def recuperar_usuarios_por_contraseña(contraseña: str):
+from fastapi import Query
+
+@app.get("/api/usuarios/leer")
+def recuperar_usuarios_por_contraseña(contraseña: str = Query(...)):
     conn = connection()
     if not conn:
-         raise HTTPException(status_code=500, detail="Database connection failed")
+        raise HTTPException(status_code=500, detail="Database connection failed")
     with conn:
         with conn.cursor() as cur:
             cur.execute("SELECT * FROM usuarios WHERE contraseña = %s", (contraseña,))
@@ -81,6 +83,7 @@ def recuperar_usuarios_por_contraseña(contraseña: str):
     if not usuario:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return usuario
+
 
 @app.put("/api/usuarios/actualizar/{id}")
 def actualizar_usuario(user_data: esquema_usuarios, id: int):
