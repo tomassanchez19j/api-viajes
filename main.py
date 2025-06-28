@@ -70,7 +70,7 @@ def recuperar_usuario(id: int):
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return usuario
 @app.get("/api/usuarios/leer/{contraseña}")
-def recuperar_usuarios_por_contraseña(contraseña: int):
+def recuperar_usuarios_por_contraseña(contraseña: str):
     conn = connection()
     if not conn:
          raise HTTPException(status_code=500, detail="Database connection failed")
