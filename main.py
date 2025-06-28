@@ -71,7 +71,7 @@ def recuperar_usuario(id: int):
     return usuario
 from fastapi import Query
 
-@app.get("/api/usuarios/por_contraseña")
+@app.get("/api/usuarios/por_contrasena")
 def recuperar_usuarios_por_contraseña(contraseña: str = Query(...)):
     conn = connection()
     if not conn:
