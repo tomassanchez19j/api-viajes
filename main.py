@@ -207,6 +207,14 @@ def insertar_venta_alquiler(user_data: esquema_ventas_alquileres):
                 INSERT INTO venta_de_alquileres(id_alquileres, id_comprador)
                 VALUES (%s, %s)
             """, (user_data.id_alquileres, user_data.id_comprador))
+           
+
+            r = resend.Emails.send({
+                "from":"jet&go@gmail.com",
+                "to": "${user_data.email}",
+                "subject": "Tu compra se realizo con exito",
+                "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
+            })
     return {"mensaje": "Venta de alquiler insertada correctamente"}
 
 @app.get("/api/ventas_alquileres/leer")
