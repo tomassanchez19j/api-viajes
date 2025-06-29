@@ -23,6 +23,9 @@ class esquema_vuelos(BaseModel):
 class esquema_ventas_alquileres(BaseModel):
     id_alquileres: int
     id_comprador: int 
+    fecha_compra: str
+    hora_compra: str
+    monto_total: int
 class esquema_alquileres(BaseModel):
     tipo_alquiler: str
     precio_dia: int

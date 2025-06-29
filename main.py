@@ -204,9 +204,9 @@ def insertar_venta_alquiler(user_data: esquema_ventas_alquileres):
     with conn:
         with conn.cursor() as cur:
             cur.execute("""
-                INSERT INTO venta_de_alquileres(id_alquileres, id_comprador)
-                VALUES (%s, %s)
-            """, (user_data.id_alquileres, user_data.id_comprador))
+                INSERT INTO venta_de_alquileres(id_alquileres, id_comprador, fecha_compra, hora_compra, monto_total)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (user_data.id_alquileres, user_data.id_comprador, user_data.fecha_compra, user_data.hora_compra, user_data.monto_total))
            
 
             r = resend.Emails.send({
