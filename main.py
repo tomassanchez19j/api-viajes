@@ -41,14 +41,6 @@ def insertar_usuarios(user_data: esquema_usuarios):
         raise HTTPException(status_code=500, detail="Database connection failed")
     with conn:
         with conn.cursor() as cur:
-            resend.api_key = "re_TsKKyAyg_NyfjidtinNa2jmcHWs28PPR8"
-
-            r = resend.Emails.send({
-                "from":"jet&go@gmail.com",
-                "to": "${user_data.email}",
-                "subject": "Tu cuenta se creo con exito",
-                "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
-            })
             cur.execute("""
                 INSERT INTO usuarios(nombre, apellido, dni, pais, email, contraseña)
                 VALUES (%s, %s, %s, %s, %s, %s)
@@ -207,14 +199,6 @@ def insertar_venta_alquiler(user_data: esquema_ventas_alquileres):
                 INSERT INTO venta_de_alquileres(id_alquileres, id_comprador, fecha_compra, hora_compra, monto_total)
                 VALUES (%s, %s, %s, %s, %s)
             """, (user_data.id_alquileres, user_data.id_comprador, user_data.fecha_compra, user_data.hora_compra, user_data.monto_total))
-           
-
-            r = resend.Emails.send({
-                "from":"jet&go@gmail.com",
-                "to": "${user_data.email}",
-                "subject": "Tu compra se realizo con exito",
-                "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
-            })
     return {"mensaje": "Venta de alquiler insertada correctamente"}
 
 @app.get("/api/ventas_alquileres/leer")
