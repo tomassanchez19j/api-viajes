@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 import psycopg
+import resend
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from esqumas.esquemasdatos import (
@@ -40,6 +41,14 @@ def insertar_usuarios(user_data: esquema_usuarios):
         raise HTTPException(status_code=500, detail="Database connection failed")
     with conn:
         with conn.cursor() as cur:
+            resend.api_key = "re_TsKKyAyg_NyfjidtinNa2jmcHWs28PPR8"
+
+            r = resend.Emails.send({
+                "from":"jet&go@gmail.com",
+                "to": "${user_data.email}",
+                "subject": "Tu cuenta se creo con exito",
+                "html": "<p>Congrats on sending your <strong>first email</strong>!</p>"
+            })
             cur.execute("""
                 INSERT INTO usuarios(nombre, apellido, dni, pais, email, contraseña)
                 VALUES (%s, %s, %s, %s, %s, %s)
@@ -371,3 +380,10 @@ def eliminar_venta_vuelo(id: int):
         with conn.cursor() as cur:
             cur.execute("DELETE FROM ventas_de_vuelos WHERE id_ventas_de_vuelos = %s", (id,))
     return {"mensaje": "Venta de vuelo eliminada correctamente"}
+
+
+#AQUI SE ENVIAN LOS CORREOS DE COMPRAS
+
+
+
+
